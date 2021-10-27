@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 
 namespace EstoqueApi.Models
 {
-    public class ProdutoCategoria
+    public class Venda
     {
         public int ID { get; set; }
+        public double Valor { get; set; }
+        public int quantidade { get; set; }
+        public double valorUnitario { get; set; }
+        public double data { get; set; }
         public ICollection<Produto> Produto { get; set; }
-        public int ProdutosID { get; set; }
-        public ICollection<Categoria> Categoria { get; set; }
-        public int categoriasID { get; set; }
+
     }
 }

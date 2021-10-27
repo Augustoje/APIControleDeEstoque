@@ -25,7 +25,16 @@ namespace EstoqueApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetProduto()
         {
-            return await _context.Produto.ToListAsync();
+
+            var produtos = await _context.Produto.ToListAsync();
+
+            foreach (var produto in produtos)
+            {
+                produto.Categoria = await _context.Categoria.
+                    Where(c => c.ID == produto.Categoria.ID).FirstOrDefaultAsync();
+            }
+
+            return produtos;
         }
 
         // GET: api/Produto/5
@@ -33,6 +42,21 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<Produto>> GetProduto(int id)
         {
             var produto = await _context.Produto.FindAsync(id);
+
+            if (produto == null)
+            {
+                return NotFound();
+            }
+
+            return produto;
+        }
+
+        // GET: api/Produto/codigo/5
+        [HttpGet("codigo/{codigo}")]
+        public async Task<ActionResult<Produto>> GetProdutoPorCodigo(int codigo)
+        {
+            var produto = await _context.Produto.Where(c => c.codigo == codigo).FirstOrDefaultAsync();
+
 
             if (produto == null)
             {

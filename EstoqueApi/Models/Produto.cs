@@ -13,11 +13,8 @@ namespace EstoqueApi.Models
         public string tamanho { get; set; }
         public double preco { get; set; }
         public string imagem { get; set; }
-        public ProdutoCategoria ProdutoCategoria { get; set; }
-        public int categoriaID { get; set; }
-        public ICollection<Movimentacao> Movimentacao { get; set; }
-
-
+        public Categoria Categoria { get; set; }
+        public Venda Venda { get; set; }
     }
 }
 

@@ -23,51 +23,23 @@ namespace EstoqueApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("nomecategoria")
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("produtoCategoriaID")
+                    b.Property<int?>("ProdutoID")
                         .HasColumnType("int");
+
+                    b.Property<string>("nome")
+                        .HasColumnType("longtext");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("produtoCategoriaID");
+                    b.HasIndex("ProdutoID");
 
                     b.ToTable("Categoria");
-                });
-
-            modelBuilder.Entity("EstoqueApi.Models.Movimentacao", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("data")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("descricoes")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("produtoID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("produtoID");
-
-                    b.ToTable("Movimentacao");
                 });
 
             modelBuilder.Entity("EstoqueApi.Models.Produto", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProdutoCategoriaID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("categoriaID")
                         .HasColumnType("int");
 
                     b.Property<int>("codigo")
@@ -96,67 +68,60 @@ namespace EstoqueApi.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ProdutoCategoriaID");
-
                     b.ToTable("Produto");
                 });
 
-            modelBuilder.Entity("EstoqueApi.Models.ProdutoCategoria", b =>
+            modelBuilder.Entity("EstoqueApi.Models.Venda", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ProdutosID")
+                    b.Property<int?>("ProdutoID")
                         .HasColumnType("int");
 
-                    b.Property<int>("categoriasID")
+                    b.Property<double>("Valor")
+                        .HasColumnType("double");
+
+                    b.Property<double>("data")
+                        .HasColumnType("double");
+
+                    b.Property<int>("quantidade")
                         .HasColumnType("int");
+
+                    b.Property<double>("valorUnitario")
+                        .HasColumnType("double");
 
                     b.HasKey("ID");
 
-                    b.ToTable("ProdutoCategoria");
+                    b.HasIndex("ProdutoID");
+
+                    b.ToTable("Venda");
                 });
 
             modelBuilder.Entity("EstoqueApi.Models.Categoria", b =>
                 {
-                    b.HasOne("EstoqueApi.Models.ProdutoCategoria", "produtoCategoria")
+                    b.HasOne("EstoqueApi.Models.Produto", "Produto")
                         .WithMany("Categoria")
-                        .HasForeignKey("produtoCategoriaID");
+                        .HasForeignKey("ProdutoID");
 
-                    b.Navigation("produtoCategoria");
+                    b.Navigation("Produto");
                 });
 
-            modelBuilder.Entity("EstoqueApi.Models.Movimentacao", b =>
+            modelBuilder.Entity("EstoqueApi.Models.Venda", b =>
                 {
                     b.HasOne("EstoqueApi.Models.Produto", "Produto")
-                        .WithMany("Movimentacao")
-                        .HasForeignKey("produtoID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Venda")
+                        .HasForeignKey("ProdutoID");
 
                     b.Navigation("Produto");
                 });
 
             modelBuilder.Entity("EstoqueApi.Models.Produto", b =>
-                {
-                    b.HasOne("EstoqueApi.Models.ProdutoCategoria", "ProdutoCategoria")
-                        .WithMany("Produto")
-                        .HasForeignKey("ProdutoCategoriaID");
-
-                    b.Navigation("ProdutoCategoria");
-                });
-
-            modelBuilder.Entity("EstoqueApi.Models.Produto", b =>
-                {
-                    b.Navigation("Movimentacao");
-                });
-
-            modelBuilder.Entity("EstoqueApi.Models.ProdutoCategoria", b =>
                 {
                     b.Navigation("Categoria");
 
-                    b.Navigation("Produto");
+                    b.Navigation("Venda");
                 });
 #pragma warning restore 612, 618
         }

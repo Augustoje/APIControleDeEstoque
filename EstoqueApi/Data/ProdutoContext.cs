@@ -17,8 +17,7 @@ namespace EstoqueApi.Data
 
         public DbSet<Categoria> Categoria { get; set; }
         public DbSet<Produto> Produto { get; set; }
-        public DbSet<Movimentacao> Movimentacao { get; set; }
-        public DbSet<ProdutoCategoria> ProdutoCategoria { get; set; }
+        public DbSet<Venda> Venda { get; set; }
 
 
     }

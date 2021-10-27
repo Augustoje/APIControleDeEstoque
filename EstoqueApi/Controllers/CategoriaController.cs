@@ -25,7 +25,14 @@ namespace EstoqueApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoria()
         {
-            return await _context.Categoria.ToListAsync();
+            var categorias = await _context.Categoria.ToListAsync();
+
+            foreach (var categoria in categorias)
+            {
+                categoria.Produto = await _context.Produto.Where(c => c.Categoria.ID == categoria.ID).ToListAsync();
+            }
+
+            return categorias;
         }
 
         // GET: api/Categoria/5
