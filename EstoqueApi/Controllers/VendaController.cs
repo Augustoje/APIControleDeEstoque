@@ -23,9 +23,11 @@ namespace EstoqueApi.Controllers
 
         // GET: api/Venda
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Venda>>> GetVenda()
+        public async Task<ActionResult<IEnumerable<Venda>>> GetVendaAtualizacao()
         {
-            return await _context.Venda.ToListAsync();
+
+            return await _context.Venda.OrderByDescending(c => c.ID).Take(10).ToListAsync();
+
         }
 
         // GET: api/Venda/5

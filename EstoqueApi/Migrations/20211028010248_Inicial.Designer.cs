@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstoqueApi.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    [Migration("20211027083403_Inicial")]
+    [Migration("20211028010248_Inicial")]
     partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,15 +25,10 @@ namespace EstoqueApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProdutoID")
-                        .HasColumnType("int");
-
                     b.Property<string>("nome")
                         .HasColumnType("longtext");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("ProdutoID");
 
                     b.ToTable("Categoria");
                 });
@@ -42,6 +37,12 @@ namespace EstoqueApi.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CategoriaID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VendaID")
                         .HasColumnType("int");
 
                     b.Property<int>("codigo")
@@ -70,6 +71,10 @@ namespace EstoqueApi.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("CategoriaID");
+
+                    b.HasIndex("VendaID");
+
                     b.ToTable("Produto");
                 });
 
@@ -77,9 +82,6 @@ namespace EstoqueApi.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProdutoID")
                         .HasColumnType("int");
 
                     b.Property<double>("Valor")
@@ -96,34 +98,32 @@ namespace EstoqueApi.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ProdutoID");
-
                     b.ToTable("Venda");
+                });
+
+            modelBuilder.Entity("EstoqueApi.Models.Produto", b =>
+                {
+                    b.HasOne("EstoqueApi.Models.Categoria", "Categoria")
+                        .WithMany("Produto")
+                        .HasForeignKey("CategoriaID");
+
+                    b.HasOne("EstoqueApi.Models.Venda", "Venda")
+                        .WithMany("Produto")
+                        .HasForeignKey("VendaID");
+
+                    b.Navigation("Categoria");
+
+                    b.Navigation("Venda");
                 });
 
             modelBuilder.Entity("EstoqueApi.Models.Categoria", b =>
                 {
-                    b.HasOne("EstoqueApi.Models.Produto", "Produto")
-                        .WithMany("Categoria")
-                        .HasForeignKey("ProdutoID");
-
                     b.Navigation("Produto");
                 });
 
             modelBuilder.Entity("EstoqueApi.Models.Venda", b =>
                 {
-                    b.HasOne("EstoqueApi.Models.Produto", "Produto")
-                        .WithMany("Venda")
-                        .HasForeignKey("ProdutoID");
-
                     b.Navigation("Produto");
-                });
-
-            modelBuilder.Entity("EstoqueApi.Models.Produto", b =>
-                {
-                    b.Navigation("Categoria");
-
-                    b.Navigation("Venda");
                 });
 #pragma warning restore 612, 618
         }
