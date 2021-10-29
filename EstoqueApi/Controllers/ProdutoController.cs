@@ -31,14 +31,21 @@ namespace EstoqueApi.Controllers
             return produtos;
         }
 
-       // Consulta quantidade de produto em estoque
-       //[HttpGet("Quantidade-Estoque")]
+        //Consulta quantidade de produto em estoque
+        [HttpGet("Quantidade-Estoque")]
 
-       // public async Task<ActionResult<List<Produto>>> GetEstoque()
-       // {
-       //     var estoques = await _context.Produto.Where(b => b.ID
+        public async Task<ActionResult<List<Produto>>> GetEstoque()
+        {
+            List<Produto> Produto = new List<Produto>();
 
-       // }
+            var estoques = await _context.Produto.Where(a => a.ID == Produto.id).ToListAsync;
+            int estoqueQuantidade = 0;
+            foreach(var estoque in estoques)
+            {
+                estoqueQuantidade += estoque.Quantidade;
+            }
+
+            return estoques;
 
         //Consulta do Produto por ID
         // GET: api/Produto/5
