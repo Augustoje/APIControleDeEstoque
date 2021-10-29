@@ -21,12 +21,73 @@ namespace EstoqueApi.Controllers
             _context = context;
         }
 
+        // Ultimas 10 vendas do estoque
         // GET: api/Venda
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Venda>>> GetVendaAtualizacao()
+        public async Task<ActionResult<IEnumerable<Venda>>> GetUltimasVendas()
         {
 
-            return await _context.Venda.OrderByDescending(c => c.ID).Take(10).ToListAsync();
+            return await _context.Venda.Include(b => b.Produto).OrderByDescending(c => c.ID).Take(10).ToListAsync();
+
+        }
+
+        // Ultima saida do estoque
+        // GET: api/Venda/Ultima-Saida
+        [HttpGet("Ultima-saida")]
+        public async Task<ActionResult<IEnumerable<Venda>>> GetUltimaSaida()
+        {
+
+            return await _context.Venda.Include(b => b.Produto).OrderByDescending(c => c.ID).Take(1).ToListAsync();
+
+        }
+
+        // 10 Produtos mais vendidos
+        // GET: api/Venda/Mais-Vendidos
+        [HttpGet("Mais-Vendidos")]
+        public async Task<ActionResult<List<Produto>>> GetMaisVendidos()
+        {
+
+            var maisVendidos  = await _context.Venda.Include(d => d.Produto).GroupBy(e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count()}).OrderByDescending(a => a.count).Take(10).ToListAsync();
+
+
+
+            List<Produto> produtos = new List<Produto>();
+
+
+             foreach (var item in maisVendidos)
+            {
+                var produto = await _context.Produto.Where(c => c.ID == item.ID).FirstOrDefaultAsync();
+                produtos.Add(produto);
+            }
+          
+
+
+            return produtos;
+
+        }
+
+        // Ultimo produtos vendido
+        // GET: api/Venda/Melhor-Venda
+        [HttpGet("Melhor-venda")]
+        public async Task<ActionResult<List<Produto>>> GetMelhorVenda()
+        {
+
+            var maisVendidos = await _context.Venda.Include(d => d.Produto).GroupBy(e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count() }).OrderByDescending(a => a.count).Take(1).ToListAsync();
+
+
+
+            List<Produto> produtos = new List<Produto>();
+
+
+            foreach (var item in maisVendidos)
+            {
+                var produto = await _context.Produto.Where(c => c.ID == item.ID).FirstOrDefaultAsync();
+                produtos.Add(produto);
+            }
+
+
+
+            return produtos;
 
         }
 
@@ -45,42 +106,41 @@ namespace EstoqueApi.Controllers
         }
 
         // PUT: api/Venda/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutVenda(int id, Venda venda)
+        [HttpPut]
+        public async Task<IActionResult> PutVenda( Venda venda)
         {
-            if (id != venda.ID)
-            {
-                return BadRequest();
-            }
 
             _context.Entry(venda).State = EntityState.Modified;
+            _context.Entry(venda.Produto).State = EntityState.Unchanged;
+         
 
-            try
-            {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VendaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
             return NoContent();
         }
 
+        // Produto vendido e subtraindo a quantidade em estoque
         // POST: api/Venda
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Venda>> PostVenda(Venda venda)
         {
+         var produto = await _context.Produto.AsNoTracking().Where(c => c.ID == 
+         venda.Produto.ID && c.quantidade >= venda.quantidade).FirstOrDefaultAsync(); 
+            
+            if (produto == null)
+            {
+                return BadRequest("Você não possui estoque suficiente");
+            }
+            produto.quantidade = produto.quantidade - venda.quantidade;
+
+            _context.Entry(produto).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            _context.Entry(produto).State = EntityState.Detached;
+
             _context.Venda.Add(venda);
+            _context.Entry(venda.Produto).State = EntityState.Unchanged;
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetVenda", new { id = venda.ID }, venda);

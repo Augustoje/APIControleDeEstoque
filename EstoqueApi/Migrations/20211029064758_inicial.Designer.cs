@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstoqueApi.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    [Migration("20211028010248_Inicial")]
-    partial class Inicial
+    [Migration("20211029064758_inicial")]
+    partial class inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,12 +42,6 @@ namespace EstoqueApi.Migrations
                     b.Property<int?>("CategoriaID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VendaID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("codigo")
-                        .HasColumnType("int");
-
                     b.Property<string>("descricao")
                         .HasColumnType("longtext");
 
@@ -57,7 +51,7 @@ namespace EstoqueApi.Migrations
                     b.Property<string>("modelo")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("nome")
+                    b.Property<string>("nomeCategoria")
                         .HasColumnType("longtext");
 
                     b.Property<double>("preco")
@@ -73,8 +67,6 @@ namespace EstoqueApi.Migrations
 
                     b.HasIndex("CategoriaID");
 
-                    b.HasIndex("VendaID");
-
                     b.ToTable("Produto");
                 });
 
@@ -84,11 +76,14 @@ namespace EstoqueApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("ProdutoID")
+                        .HasColumnType("int");
+
                     b.Property<double>("Valor")
                         .HasColumnType("double");
 
-                    b.Property<double>("data")
-                        .HasColumnType("double");
+                    b.Property<string>("data")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("quantidade")
                         .HasColumnType("int");
@@ -97,6 +92,8 @@ namespace EstoqueApi.Migrations
                         .HasColumnType("double");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ProdutoID");
 
                     b.ToTable("Venda");
                 });
@@ -107,21 +104,19 @@ namespace EstoqueApi.Migrations
                         .WithMany("Produto")
                         .HasForeignKey("CategoriaID");
 
-                    b.HasOne("EstoqueApi.Models.Venda", "Venda")
-                        .WithMany("Produto")
-                        .HasForeignKey("VendaID");
-
                     b.Navigation("Categoria");
-
-                    b.Navigation("Venda");
-                });
-
-            modelBuilder.Entity("EstoqueApi.Models.Categoria", b =>
-                {
-                    b.Navigation("Produto");
                 });
 
             modelBuilder.Entity("EstoqueApi.Models.Venda", b =>
+                {
+                    b.HasOne("EstoqueApi.Models.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoID");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("EstoqueApi.Models.Categoria", b =>
                 {
                     b.Navigation("Produto");
                 });

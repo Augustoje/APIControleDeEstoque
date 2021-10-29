@@ -11,8 +11,7 @@ namespace EstoqueApi.Models
         public double Valor { get; set; }
         public int quantidade { get; set; }
         public double valorUnitario { get; set; }
-        public double data { get; set; }
-        public ICollection<Produto> Produto { get; set; }
-
+        public string data { get; set; }
+        public Produto Produto { get; set; }
     }
 }

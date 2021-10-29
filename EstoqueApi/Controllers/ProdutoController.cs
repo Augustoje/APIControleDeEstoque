@@ -20,42 +20,32 @@ namespace EstoqueApi.Controllers
         {
             _context = context;
         }
-
+        // consultando todos os produtos e suas respectivas categorias
         // GET: api/Produto
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetProduto()
         {
 
-            var produtos = await _context.Produto.ToListAsync();
-
-            foreach (var produto in produtos)
-            {
-                produto.Categoria = await _context.Categoria.
-                    Where(c => c.ID == produto.Categoria.ID).FirstOrDefaultAsync();
-            }
+            var produtos = await _context.Produto.Include(a => a.Categoria).ToListAsync();
 
             return produtos;
         }
 
+       // Consulta quantidade de produto em estoque
+       //[HttpGet("Quantidade-Estoque")]
+
+       // public async Task<ActionResult<List<Produto>>> GetEstoque()
+       // {
+       //     var estoques = await _context.Produto.Where(b => b.ID
+
+       // }
+
+        //Consulta do Produto por ID
         // GET: api/Produto/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Produto>> GetProduto(int id)
+        public async Task<ActionResult<Produto>> GetProdutoPorCodigo(int id)
         {
-            var produto = await _context.Produto.FindAsync(id);
-
-            if (produto == null)
-            {
-                return NotFound();
-            }
-
-            return produto;
-        }
-
-        // GET: api/Produto/codigo/5
-        [HttpGet("codigo/{codigo}")]
-        public async Task<ActionResult<Produto>> GetProdutoPorCodigo(int codigo)
-        {
-            var produto = await _context.Produto.Where(c => c.codigo == codigo).FirstOrDefaultAsync();
+            var produto = await _context.Produto.Where(c => c.ID == id).FirstOrDefaultAsync();
 
 
             if (produto == null)
@@ -67,32 +57,32 @@ namespace EstoqueApi.Controllers
         }
 
         // PUT: api/Produto/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduto(int id, Produto produto)
+        [HttpPut]
+        public async Task<IActionResult> PutProduto( Produto produto)
         {
-            if (id != produto.ID)
-            {
-                return BadRequest();
-            }
 
             _context.Entry(produto).State = EntityState.Modified;
+            _context.Entry(produto.Categoria).State = EntityState.Unchanged;  
 
-            try
-            {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProdutoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            return NoContent();
+        }
+
+        // PUT Selecionando o ID e adicionando a quantidade do produto, subtraindo a quantidade em estoque
+        // PUT: api/Produto
+        //
+        [HttpPatch("Produto/{id}/Compra/quantidade/{quantidade}")]
+        public async Task<IActionResult> PutQtdProduto([FromRoute] int id, [FromRoute] int quantidade)
+        {
+            var Compra = new Produto() { ID = id, quantidade = quantidade }; 
+
+           var meuProduto = await _context.Produto.AsNoTracking().Where(c => c.ID == Compra.ID).FirstOrDefaultAsync();
+            meuProduto.quantidade = meuProduto.quantidade + Compra.quantidade;
+            _context.Produto.Attach(meuProduto);
+            _context.Entry(meuProduto).Property(c => c.quantidade).IsModified = true;
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -102,8 +92,11 @@ namespace EstoqueApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Produto>> PostProduto(Produto produto)
         {
+
             _context.Produto.Add(produto);
+            _context.Entry(produto.Categoria).State = EntityState.Unchanged;
             await _context.SaveChangesAsync();
+
 
             return CreatedAtAction("GetProduto", new { id = produto.ID }, produto);
         }

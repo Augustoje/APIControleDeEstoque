@@ -21,6 +21,7 @@ namespace EstoqueApi.Controllers
             _context = context;
         }
 
+        //Consultando todos os produtos da categoria
         // GET: api/Categoria
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoria()
@@ -50,7 +51,6 @@ namespace EstoqueApi.Controllers
         }
 
         // PUT: api/Categoria/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategoria(int id, Categoria categoria)
         {
@@ -81,7 +81,6 @@ namespace EstoqueApi.Controllers
         }
 
         // POST: api/Categoria
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Categoria>> PostCategoria(Categoria categoria)
         {

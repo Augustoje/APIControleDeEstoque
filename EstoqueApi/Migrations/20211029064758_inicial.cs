@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EstoqueApi.Migrations
 {
-    public partial class Inicial : Migration
+    public partial class inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,30 +26,12 @@ namespace EstoqueApi.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Venda",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Valor = table.Column<double>(type: "double", nullable: false),
-                    quantidade = table.Column<int>(type: "int", nullable: false),
-                    valorUnitario = table.Column<double>(type: "double", nullable: false),
-                    data = table.Column<double>(type: "double", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Venda", x => x.ID);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Produto",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    codigo = table.Column<int>(type: "int", nullable: false),
-                    nome = table.Column<string>(type: "longtext", nullable: true)
+                    nomeCategoria = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     modelo = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -61,8 +43,7 @@ namespace EstoqueApi.Migrations
                     preco = table.Column<double>(type: "double", nullable: false),
                     imagem = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CategoriaID = table.Column<int>(type: "int", nullable: true),
-                    VendaID = table.Column<int>(type: "int", nullable: true)
+                    CategoriaID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -73,10 +54,29 @@ namespace EstoqueApi.Migrations
                         principalTable: "Categoria",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Venda",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Valor = table.Column<double>(type: "double", nullable: false),
+                    quantidade = table.Column<int>(type: "int", nullable: false),
+                    valorUnitario = table.Column<double>(type: "double", nullable: false),
+                    data = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProdutoID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Venda", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Produto_Venda_VendaID",
-                        column: x => x.VendaID,
-                        principalTable: "Venda",
+                        name: "FK_Venda_Produto_ProdutoID",
+                        column: x => x.ProdutoID,
+                        principalTable: "Produto",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 })
@@ -88,21 +88,21 @@ namespace EstoqueApi.Migrations
                 column: "CategoriaID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Produto_VendaID",
-                table: "Produto",
-                column: "VendaID");
+                name: "IX_Venda_ProdutoID",
+                table: "Venda",
+                column: "ProdutoID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Venda");
+
+            migrationBuilder.DropTable(
                 name: "Produto");
 
             migrationBuilder.DropTable(
                 name: "Categoria");
-
-            migrationBuilder.DropTable(
-                name: "Venda");
         }
     }
 }
