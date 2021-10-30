@@ -21,22 +21,17 @@ namespace EstoqueApi.Controllers
             _context = context;
         }
 
-        //Consultando todos os produtos da categoria
+        //Consultando todos as categorias
         // GET: api/Categoria
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoria()
         {
             var categorias = await _context.Categoria.ToListAsync();
 
-            foreach (var categoria in categorias)
-            {
-                categoria.Produto = await _context.Produto.Where(c => c.Categoria.ID == categoria.ID).ToListAsync();
-            }
-
             return categorias;
         }
 
-        // GET: api/Categoria/5
+        // GET: api/Categoria/1
         [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> GetCategoria(int id)
         {
@@ -50,7 +45,7 @@ namespace EstoqueApi.Controllers
             return categoria;
         }
 
-        // PUT: api/Categoria/5
+        // PUT: api/Categoria/1
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategoria(int id, Categoria categoria)
         {
@@ -90,7 +85,7 @@ namespace EstoqueApi.Controllers
             return CreatedAtAction("GetCategoria", new { id = categoria.ID }, categoria);
         }
 
-        // DELETE: api/Categoria/5
+        // DELETE: api/Categoria/1
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategoria(int id)
         {

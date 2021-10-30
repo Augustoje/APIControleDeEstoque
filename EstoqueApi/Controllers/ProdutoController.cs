@@ -45,7 +45,7 @@ namespace EstoqueApi.Controllers
 
 
             //Consulta do Produto por ID
-            // GET: api/Produto/5
+            // GET: api/Produto/1
             [HttpGet("{id}")]
         public async Task<ActionResult<Produto>> GetProdutoPorCodigo(int id)
         {
@@ -60,7 +60,8 @@ namespace EstoqueApi.Controllers
             return produto;
         }
 
-        // PUT: api/Produto/5
+        //Edita o Produto e a categoria por ID
+        // PUT: api/Produto/1
         [HttpPut]
         public async Task<IActionResult> PutProduto( Produto produto)
         {
@@ -74,7 +75,7 @@ namespace EstoqueApi.Controllers
         }
 
         // PUT Selecionando o ID e adicionando a quantidade do produto, somando a quantidade em estoque
-        // PUT: api/Produto
+        // PUT: api/Produto/Produto/{id}/Compra/quantidade/{quantidade
         //
         [HttpPatch("Produto/{id}/Compra/quantidade/{quantidade}")]
         public async Task<IActionResult> PutQtdProduto([FromRoute] int id, [FromRoute] int quantidade)
@@ -92,7 +93,6 @@ namespace EstoqueApi.Controllers
         }
 
         // POST: api/Produto
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Produto>> PostProduto(Produto produto)
         {
@@ -105,7 +105,7 @@ namespace EstoqueApi.Controllers
             return CreatedAtAction("GetProduto", new { id = produto.ID }, produto);
         }
 
-        // DELETE: api/Produto/5
+        // DELETE: api/Produto/1
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduto(int id)
         {
