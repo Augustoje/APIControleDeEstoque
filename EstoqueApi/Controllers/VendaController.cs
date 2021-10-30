@@ -27,7 +27,8 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<IEnumerable<Venda>>> GetUltimasVendas()
         {
 
-            return await _context.Venda.Include(b => b.Produto).OrderByDescending(c => c.ID).Take(10).ToListAsync();
+            return await _context.Venda.Include(b => b.Produto).OrderByDescending(c => c.ID)
+                .Take(10).ToListAsync();
 
         }
 
@@ -37,7 +38,8 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<IEnumerable<Venda>>> GetUltimaSaida()
         {
 
-            return await _context.Venda.Include(b => b.Produto).OrderByDescending(c => c.ID).Take(1).ToListAsync();
+            return await _context.Venda.Include(b => b.Produto).OrderByDescending(c => c.ID)
+                .Take(1).ToListAsync();
 
         }
 
@@ -47,7 +49,9 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<List<Produto>>> GetMaisVendidos()
         {
 
-            var maisVendidos  = await _context.Venda.Include(d => d.Produto).GroupBy(e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count()}).OrderByDescending(a => a.count).Take(10).ToListAsync();
+            var maisVendidos  = await _context.Venda.Include(d => d.Produto).GroupBy
+                (e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count()})
+                .OrderByDescending(a => a.count).Take(10).ToListAsync();
 
 
 
@@ -56,7 +60,8 @@ namespace EstoqueApi.Controllers
 
              foreach (var item in maisVendidos)
             {
-                var produto = await _context.Produto.Where(c => c.ID == item.ID).FirstOrDefaultAsync();
+                var produto = await _context.Produto.Where(c => c.ID == item.ID)
+                    .FirstOrDefaultAsync();
                 produtos.Add(produto);
             }
           
@@ -72,23 +77,20 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<List<Produto>>> GetMelhorVenda()
         {
 
-            var maisVendidos = await _context.Venda.Include(d => d.Produto).GroupBy(e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count() }).OrderByDescending(a => a.count).Take(1).ToListAsync();
-
-
+            var maisVendidos = await _context.Venda.Include(d => d.Produto).GroupBy
+                (e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count() })
+                .OrderByDescending(a => a.count).Take(1).ToListAsync();
 
             List<Produto> produtos = new List<Produto>();
 
-
             foreach (var item in maisVendidos)
             {
-                var produto = await _context.Produto.Where(c => c.ID == item.ID).FirstOrDefaultAsync();
+                var produto = await _context.Produto.Where(c => c.ID == item.ID)
+                    .FirstOrDefaultAsync();
                 produtos.Add(produto);
             }
 
-
-
             return produtos;
-
         }
 
         // GET: api/Venda/5

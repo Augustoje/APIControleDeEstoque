@@ -34,22 +34,19 @@ namespace EstoqueApi.Controllers
         //Consulta quantidade de produto em estoque
         [HttpGet("Quantidade-Estoque")]
 
-        public async Task<ActionResult<List<Produto>>> GetEstoque()
+        public async Task<ActionResult<int>>GetEstoque()
         {
-            List<Produto> Produto = new List<Produto>();
 
-            var estoques = await _context.Produto.Where(a => a.ID == Produto.id).ToListAsync;
-            int estoqueQuantidade = 0;
-            foreach(var estoque in estoques)
-            {
-                estoqueQuantidade += estoque.Quantidade;
-            }
+            var estoque = _context.Produto.Sum(a => a.quantidade);
 
-            return estoques;
+            return estoque;
+        }
 
-        //Consulta do Produto por ID
-        // GET: api/Produto/5
-        [HttpGet("{id}")]
+
+
+            //Consulta do Produto por ID
+            // GET: api/Produto/5
+            [HttpGet("{id}")]
         public async Task<ActionResult<Produto>> GetProdutoPorCodigo(int id)
         {
             var produto = await _context.Produto.Where(c => c.ID == id).FirstOrDefaultAsync();
@@ -76,7 +73,7 @@ namespace EstoqueApi.Controllers
             return NoContent();
         }
 
-        // PUT Selecionando o ID e adicionando a quantidade do produto, subtraindo a quantidade em estoque
+        // PUT Selecionando o ID e adicionando a quantidade do produto, somando a quantidade em estoque
         // PUT: api/Produto
         //
         [HttpPatch("Produto/{id}/Compra/quantidade/{quantidade}")]
