@@ -35,12 +35,12 @@ namespace EstoqueApi.Controllers
         // Ultima saida do estoque
         // GET: api/Venda/Ultima-Saida
         [HttpGet("Ultima-saida")]
-        public async Task<ActionResult<IEnumerable<Venda>>> GetUltimaSaida()
+        public async Task<ActionResult<int>> GetUltimaSaida()
         {
 
-            return await _context.Venda.Include(b => b.Produto).OrderByDescending(c => c.ID)
-                .Take(1).ToListAsync();
+            var estoqueQtde = _context.Venda.Sum(a => a.quantidade);
 
+            return estoqueQtde;
         }
 
         // 10 Produtos mais vendidos
