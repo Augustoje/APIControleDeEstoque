@@ -127,9 +127,9 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<Venda>> PostVenda(Venda venda)
         {
          var produto = await _context.Produto.AsNoTracking().Where(c => c.ID == 
-         venda.Produto.ID && c.quantidade >= venda.quantidade).FirstOrDefaultAsync(); 
-            
-            if (produto == null)
+         venda.Produto.ID && c.quantidade >= venda.quantidade).FirstOrDefaultAsync();
+
+            if (produto == null || produto.ativo == false)
             {
                 return BadRequest("Você não possui estoque suficiente");
             }

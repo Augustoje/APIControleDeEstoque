@@ -26,7 +26,7 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<IEnumerable<Produto>>> GetProduto()
         {
 
-            var produtos = await _context.Produto.Include(a => a.Categoria).Where(b => b.ativo == true).ToListAsync();
+            var produtos = await _context.Produto.Include(a => a.Categoria).Where(b => b.ativo == true).OrderByDescending(e => e.ID).ToListAsync();
 
             return produtos;
         }
@@ -50,7 +50,7 @@ namespace EstoqueApi.Controllers
             [HttpGet("{id}")]
         public async Task<ActionResult<Produto>> GetProdutoPorCodigo(int id)
         {
-            var produto = await _context.Produto.Where(c => c.ID == id && c.ativo == true).FirstOrDefaultAsync();
+            var produto = await _context.Produto.Where(c => c.ID == id).FirstOrDefaultAsync();
 
 
             if (produto == null)
