@@ -40,6 +40,9 @@ namespace EstoqueApi.Migrations
                     b.Property<int?>("CategoriaID")
                         .HasColumnType("int");
 
+                    b.Property<bool>("ativo")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("descricao")
                         .HasColumnType("longtext");
 

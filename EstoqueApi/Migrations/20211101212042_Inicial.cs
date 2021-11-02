@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EstoqueApi.Migrations
 {
-    public partial class inicial : Migration
+    public partial class Inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,7 @@ namespace EstoqueApi.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    nome = table.Column<string>(type: "longtext", nullable: true)
+                    nomeCategoria = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -31,7 +31,7 @@ namespace EstoqueApi.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    nomeCategoria = table.Column<string>(type: "longtext", nullable: true)
+                    nome = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     modelo = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -43,6 +43,7 @@ namespace EstoqueApi.Migrations
                     preco = table.Column<double>(type: "double", nullable: false),
                     imagem = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    ativo = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     CategoriaID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -63,9 +64,9 @@ namespace EstoqueApi.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Valor = table.Column<double>(type: "double", nullable: false),
+                    total = table.Column<double>(type: "double", nullable: false),
                     quantidade = table.Column<int>(type: "int", nullable: false),
-                    valorUnitario = table.Column<double>(type: "double", nullable: false),
+                    precoUnitario = table.Column<double>(type: "double", nullable: false),
                     data = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ProdutoID = table.Column<int>(type: "int", nullable: true)

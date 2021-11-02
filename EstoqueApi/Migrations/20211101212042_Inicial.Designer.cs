@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EstoqueApi.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    [Migration("20211031143424_Atualiação Venda")]
-    partial class AtualiaçãoVenda
+    [Migration("20211101212042_Inicial")]
+    partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,6 +41,9 @@ namespace EstoqueApi.Migrations
 
                     b.Property<int?>("CategoriaID")
                         .HasColumnType("int");
+
+                    b.Property<bool>("ativo")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("descricao")
                         .HasColumnType("longtext");

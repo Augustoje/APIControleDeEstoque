@@ -26,7 +26,7 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<IEnumerable<Produto>>> GetProduto()
         {
 
-            var produtos = await _context.Produto.Include(a => a.Categoria).ToListAsync();
+            var produtos = await _context.Produto.Include(a => a.Categoria).Where(b => b.ativo == true).ToListAsync();
 
             return produtos;
         }
@@ -37,7 +37,8 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<int>>GetEstoque()
         {
 
-            var estoque = _context.Produto.Sum(a => a.quantidade);
+            var estoque = _context.Produto.Where(c => c.ativo == true).Sum(a => a.quantidade);
+
 
             return estoque;
         }
@@ -49,7 +50,7 @@ namespace EstoqueApi.Controllers
             [HttpGet("{id}")]
         public async Task<ActionResult<Produto>> GetProdutoPorCodigo(int id)
         {
-            var produto = await _context.Produto.Where(c => c.ID == id).FirstOrDefaultAsync();
+            var produto = await _context.Produto.Where(c => c.ID == id && c.ativo == true).FirstOrDefaultAsync();
 
 
             if (produto == null)
@@ -109,13 +110,11 @@ namespace EstoqueApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduto(int id)
         {
-            var produto = await _context.Produto.FindAsync(id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
+            var produto = await _context.Produto.AsNoTracking().Include(e => e.Categoria).Where(c => c.ID == id).FirstOrDefaultAsync();
+            produto.ativo = false;
+            _context.Entry(produto).State = EntityState.Modified;
+            _context.Entry(produto.Categoria).State = EntityState.Unchanged;
 
-            _context.Produto.Remove(produto);
             await _context.SaveChangesAsync();
 
             return NoContent();
