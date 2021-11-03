@@ -1,12 +1,10 @@
-﻿using System;
+﻿using EstoqueApi.Data;
+using EstoqueApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using EstoqueApi.Data;
-using EstoqueApi.Models;
 
 namespace EstoqueApi.Controllers
 {
@@ -65,8 +63,7 @@ namespace EstoqueApi.Controllers
                 if (!CategoriaExists(id))
                 {
                     return NotFound();
-                }
-                else
+                } else
                 {
                     throw;
                 }

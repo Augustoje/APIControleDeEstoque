@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace EstoqueApi.Models
+﻿namespace EstoqueApi.Models
 {
     public class Produto
     {

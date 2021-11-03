@@ -1,12 +1,10 @@
-﻿using System;
+﻿using EstoqueApi.Data;
+using EstoqueApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using EstoqueApi.Data;
-using EstoqueApi.Models;
 
 namespace EstoqueApi.Controllers
 {
@@ -25,8 +23,8 @@ namespace EstoqueApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetProduto()
         {
-
-            var produtos = await _context.Produto.Include(a => a.Categoria).Where(b => b.ativo == true).OrderByDescending(e => e.ID).ToListAsync();
+            var produtos = await _context.Produto.Include(a => a.Categoria)
+                .Where(b => b.ativo == true).OrderByDescending(e => e.ID).ToListAsync();
 
             return produtos;
         }
@@ -34,24 +32,20 @@ namespace EstoqueApi.Controllers
         //Consulta quantidade de produto em estoque
         [HttpGet("Quantidade-Estoque")]
 
-        public async Task<ActionResult<int>>GetEstoque()
+        public async Task<ActionResult<int>> GetEstoque()
         {
 
             var estoque = _context.Produto.Where(c => c.ativo == true).Sum(a => a.quantidade);
 
-
             return estoque;
         }
 
-
-
-            //Consulta do Produto por ID
-            // GET: api/Produto/1
-            [HttpGet("{id}")]
+        //Consulta do Produto por ID
+        // GET: api/Produto/1
+        [HttpGet("{id}")]
         public async Task<ActionResult<Produto>> GetProdutoPorCodigo(int id)
         {
             var produto = await _context.Produto.Where(c => c.ID == id).FirstOrDefaultAsync();
-
 
             if (produto == null)
             {
@@ -64,13 +58,12 @@ namespace EstoqueApi.Controllers
         //Edita o Produto e a categoria por ID
         // PUT: api/Produto/1
         [HttpPut]
-        public async Task<IActionResult> PutProduto( Produto produto)
+        public async Task<IActionResult> PutProduto(Produto produto)
         {
-
             _context.Entry(produto).State = EntityState.Modified;
-            _context.Entry(produto.Categoria).State = EntityState.Unchanged;  
+            _context.Entry(produto.Categoria).State = EntityState.Unchanged;
 
-                await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -81,9 +74,9 @@ namespace EstoqueApi.Controllers
         [HttpPatch("Produto/{id}/Compra/quantidade/{quantidade}")]
         public async Task<IActionResult> PutQtdProduto([FromRoute] int id, [FromRoute] int quantidade)
         {
-            var Compra = new Produto() { ID = id, quantidade = quantidade }; 
+            var Compra = new Produto() { ID = id, quantidade = quantidade };
 
-           var meuProduto = await _context.Produto.AsNoTracking().Where(c => c.ID == Compra.ID).FirstOrDefaultAsync();
+            var meuProduto = await _context.Produto.AsNoTracking().Where(c => c.ID == Compra.ID).FirstOrDefaultAsync();
             meuProduto.quantidade = meuProduto.quantidade + Compra.quantidade;
             _context.Produto.Attach(meuProduto);
             _context.Entry(meuProduto).Property(c => c.quantidade).IsModified = true;
@@ -101,7 +94,6 @@ namespace EstoqueApi.Controllers
             _context.Produto.Add(produto);
             _context.Entry(produto.Categoria).State = EntityState.Unchanged;
             await _context.SaveChangesAsync();
-
 
             return CreatedAtAction("GetProduto", new { id = produto.ID }, produto);
         }

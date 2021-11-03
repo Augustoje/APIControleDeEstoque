@@ -1,12 +1,10 @@
-﻿using System;
+﻿using EstoqueApi.Data;
+using EstoqueApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using EstoqueApi.Data;
-using EstoqueApi.Models;
 
 namespace EstoqueApi.Controllers
 {
@@ -29,7 +27,6 @@ namespace EstoqueApi.Controllers
 
             return await _context.Venda.Include(b => b.Produto).OrderByDescending(c => c.ID)
                 .Take(10).ToListAsync();
-
         }
 
         // Ultima saida do estoque
@@ -48,27 +45,20 @@ namespace EstoqueApi.Controllers
         [HttpGet("Mais-Vendidos")]
         public async Task<ActionResult<List<Produto>>> GetMaisVendidos()
         {
-
-            var maisVendidos  = await _context.Venda.Include(d => d.Produto).GroupBy
-                (e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count()})
+            var maisVendidos = await _context.Venda.Include(d => d.Produto).GroupBy
+                (e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count() })
                 .OrderByDescending(a => a.count).Take(10).ToListAsync();
-
-
 
             List<Produto> produtos = new List<Produto>();
 
-
-             foreach (var item in maisVendidos)
+            foreach (var item in maisVendidos)
             {
                 var produto = await _context.Produto.Where(c => c.ID == item.ID)
                     .FirstOrDefaultAsync();
                 produtos.Add(produto);
             }
-          
-
 
             return produtos;
-
         }
 
         // Ultimo produtos vendido
@@ -76,7 +66,6 @@ namespace EstoqueApi.Controllers
         [HttpGet("Melhor-venda")]
         public async Task<ActionResult<List<Produto>>> GetMelhorVenda()
         {
-
             var maisVendidos = await _context.Venda.Include(d => d.Produto).GroupBy
                 (e => e.Produto.ID).Select(b => new { ID = b.Key, count = b.Count() })
                 .OrderByDescending(a => a.count).Take(1).ToListAsync();
@@ -109,14 +98,12 @@ namespace EstoqueApi.Controllers
 
         // PUT: api/Venda/5
         [HttpPut]
-        public async Task<IActionResult> PutVenda( Venda venda)
+        public async Task<IActionResult> PutVenda(Venda venda)
         {
-
             _context.Entry(venda).State = EntityState.Modified;
             _context.Entry(venda.Produto).State = EntityState.Unchanged;
-         
 
-                await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -126,8 +113,8 @@ namespace EstoqueApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Venda>> PostVenda(Venda venda)
         {
-         var produto = await _context.Produto.AsNoTracking().Where(c => c.ID == 
-         venda.Produto.ID && c.quantidade >= venda.quantidade).FirstOrDefaultAsync();
+            var produto = await _context.Produto.AsNoTracking().Where(c => c.ID ==
+            venda.Produto.ID && c.quantidade >= venda.quantidade).FirstOrDefaultAsync();
 
             if (produto == null || produto.ativo == false)
             {
